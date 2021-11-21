@@ -25,7 +25,7 @@ services:
     image: grafana/grafana:8.0.2
     container_name: grafana
     restart: unless-stopped
-    user: "472"
+#    user: "472"
     env_file: configuration.env
     expose:
       - 3000
