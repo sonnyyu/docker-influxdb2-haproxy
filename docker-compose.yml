@@ -14,8 +14,6 @@ services:
     container_name: influxdb
     restart: unless-stopped
     env_file: configuration.env
-#    ports:
-#      - '0.0.0.0:8086:8086'
     expose:
       - 8086
     volumes:
@@ -27,12 +25,12 @@ services:
     image: grafana/grafana:8.0.2
     container_name: grafana
     restart: unless-stopped
+    user: "472"
     env_file: configuration.env
-#    ports:
-#      - '0.0.0.0:3000:3000'
     expose:
       - 3000
     volumes:
+#      - grafana_data:/var/lib/grafana
       - ./grafana/grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
       - ./grafana/dashboards/:/var/lib/grafana/dashboards/
@@ -46,13 +44,12 @@ services:
     ports:
       - "3000:3000"
       - "8086:8086"
-  #    - "9093:9093"
-  #    - "9091:9091"
     restart: unless-stopped
     networks:
       - monitor  
 volumes:
   influxdb_data: {}
+  grafana_data: {}
 networks:
   monitor:
     driver: bridge
