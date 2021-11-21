@@ -2,38 +2,47 @@ version: '3.6'
 services:
   telegraf:
     image: telegraf:1.18-alpine
+    container_name: telegraf
+    restart: unless-stopped
     volumes:
     - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      - influxdb
-    links:
-      - influxdb
-    ports:
-    - '0.0.0.0:8125:8125/udp'
-
+#    depends_on:
+#      - influxdb
+#    links:
+#      - influxdb
+    networks:
+      - monitor
   influxdb:
     image: influxdb:1.8-alpine
+    container_name: influxdb
+    restart: unless-stopped
     env_file: configuration.env
     ports:
       - '0.0.0.0:8086:8086'
     volumes:
-      - ./:/imports
+      - ./influxdb:/imports
       - influxdb_data:/var/lib/influxdb
-
+    networks:
+      - monitor
   grafana:
     image: grafana/grafana:8.0.2
-    depends_on:
-      - influxdb
+    container_name: grafana
+    restart: unless-stopped
+#    depends_on:
+#      - influxdb
     env_file: configuration.env
-    links:
-      - influxdb
+#    links:
+#      - influxdb
     ports:
       - '0.0.0.0:3000:3000'
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ./grafana/grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
       - ./grafana/dashboards/:/var/lib/grafana/dashboards/
-
+    networks:
+      - monitor
 volumes:
-  grafana_data: {}
   influxdb_data: {}
+networks:
+  monitor:
+    driver: bridge
