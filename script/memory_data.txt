@@ -1,0 +1,3 @@
+memory_usage_short,host=U20202,process=influxd value=2.4 
+memory_usage_short,host=U20202,process=haproxy value=2.0 
+memory_usage_short,host=U20202,process=/usr/bin/dockerd value=2.0 
